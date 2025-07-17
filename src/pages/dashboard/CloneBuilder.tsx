@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useAuthStore } from '@/store/authStore';
 import { useAppStore } from '@/store/appStore';
+import GeminiService from '@/services/geminiService';
 import { toast } from 'sonner';
 import {
   Users,
@@ -52,8 +53,30 @@ export default function CloneBuilder() {
       
       // Analyze sample posts (mock analysis)
       const posts = formData.samplePosts.split('\n\n').filter(p => p.trim());
-      const tone = analyzePostsTone(formData.samplePosts);
-      const personality = analyzePersonality(formData.samplePosts);
+      
+      // Use Gemini AI to analyze tone and personality
+      const analysisPrompt = `Analyze these sample posts and determine the writing tone and personality traits:
+
+${formData.samplePosts}
+
+Return only: TONE: [tone description] | PERSONALITY: [trait1, trait2, trait3]`;
+      
+      let tone = 'Professional yet approachable';
+      let personality = ['Professional', 'Engaging', 'Thoughtful'];
+      
+      try {
+        const analysis = await GeminiService.chatResponse(analysisPrompt);
+        const parts = analysis.split('|');
+        if (parts.length >= 2) {
+          tone = parts[0].replace('TONE:', '').trim();
+          const personalityStr = parts[1].replace('PERSONALITY:', '').trim();
+          personality = personalityStr.split(',').map(p => p.trim());
+        }
+      } catch (error) {
+        console.warn('Using fallback analysis:', error);
+        tone = analyzePostsTone(formData.samplePosts);
+        personality = analyzePersonality(formData.samplePosts);
+      }
       
       const newClone = await addClone({
         user_id: user.id,

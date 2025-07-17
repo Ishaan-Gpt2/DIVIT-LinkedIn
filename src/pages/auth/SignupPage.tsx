@@ -57,14 +57,6 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4 w-full">
-      {/* Splash Cursor Effect */}
-      <SplashCursor 
-        BACK_COLOR={{ r: 0.3, g: 0, b: 0.5 }}
-        COLOR_UPDATE_SPEED={5}
-        SPLAT_RADIUS={0.3}
-        SPLAT_FORCE={8000}
-      />
-      
       <div className="absolute inset-0 bg-gradient-to-br from-purple-950/20 via-black to-purple-950/20" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/10 via-transparent to-transparent" />
       

@@ -14,6 +14,7 @@ import { Progress } from '@/components/ui/progress';
 import { useAuthStore } from '@/store/authStore';
 import { useAppStore } from '@/store/appStore';
 import { useApiKeysStore } from '@/store/apiKeysStore';
+import GeminiService from '@/services/geminiService';
 import { toast } from 'sonner';
 import {
   Link2,
@@ -265,7 +266,7 @@ export default function ConnectEngine() {
     
     try {
       // Enhanced processing time based on API usage
-      const processingTime = mockDataFlags.useApifyMockData ? 2000 : 5000;
+      const processingTime = 3000;
       await new Promise(resolve => setTimeout(resolve, processingTime));
       
       // Filter prospects based on criteria
@@ -290,14 +291,12 @@ export default function ConnectEngine() {
       }
       
       // Enhanced data for "real" API usage
-      if (!mockDataFlags.useApifyMockData) {
-        filteredProspects = filteredProspects.map(prospect => ({
-          ...prospect,
-          matchScore: Math.min(99, prospect.matchScore + 3),
-          responseRate: Math.min(95, prospect.responseRate + 8),
-          skills: [...prospect.skills, 'Advanced Analytics', 'Strategic Planning']
-        }));
-      }
+      filteredProspects = filteredProspects.map(prospect => ({
+        ...prospect,
+        matchScore: Math.min(99, prospect.matchScore + Math.floor(Math.random() * 5)),
+        responseRate: Math.min(95, prospect.responseRate + Math.floor(Math.random() * 10)),
+        skills: [...prospect.skills, 'Advanced Analytics', 'Strategic Planning']
+      }));
       
       setProspects(filteredProspects);
       
@@ -329,7 +328,12 @@ export default function ConnectEngine() {
       // Simulate connection request with personalized message generation
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const personalizedMessage = `Hi ${prospect.name.split(' ')[0]}, I noticed your work in ${prospect.industry} at ${prospect.company}. Your recent post about ${prospect.recentActivity.toLowerCase()} really resonated with me. I'd love to connect and share insights!`;
+      // Generate personalized message using Gemini AI
+      const personalizedMessage = await GeminiService.generateConnectionMessage(
+        prospect.name,
+        prospect.title,
+        prospect.company
+      );
       
       // Add to connections store
       addConnection({

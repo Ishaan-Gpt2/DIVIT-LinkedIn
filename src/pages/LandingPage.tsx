@@ -10,8 +10,6 @@ import { GlowingEffect } from '@/components/ui/glowing-effect';
 import { SplineScene } from '@/components/ui/splite';
 import { BackgroundPaths } from '@/components/ui/background-paths';
 import { SplashCursor } from '@/components/ui/splash-cursor';
-import { TavusSection } from '@/components/ui/tavus-section';
-import { FloatingTavusButton } from '@/components/ui/floating-tavus-button';
 import {
   EnhancedFeatures,
   EnhancedPricing,
@@ -241,9 +239,6 @@ export default function LandingPage() {
         SPLAT_FORCE={8000}
       />
       
-      {/* Floating Tavus Video Chat Button */}
-      <FloatingTavusButton />
-      
       {/* Transparent Glassy Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 p-4">
         <div className="max-w-7xl mx-auto">
@@ -369,9 +364,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
-      {/* Tavus Video Chat Section */}
-      <TavusSection />
 
       {/* Enhanced Stats Section */}
       <EnhancedStats 

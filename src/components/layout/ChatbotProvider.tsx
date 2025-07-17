@@ -3,7 +3,7 @@ import { SmartChatbot } from '@/components/ui/smart-chatbot';
 import { ChatbotTrigger } from '@/components/ui/chatbot-trigger';
 import { ChatbotContextMenu } from '@/components/ui/chatbot-context-menu';
 import { useChatbot } from '@/hooks/useChatbot';
-import axios from 'axios';
+import GeminiService from '@/services/geminiService';
 
 interface ChatbotContextType {
   openChatbot: () => void;
@@ -62,9 +62,8 @@ export function ChatbotProvider({ children }: ChatbotProviderProps) {
     setIsLoading(true);
     
     try {
-      // In a real implementation, this would be a server-side API call
-      // For demo purposes, we're simulating the API call
-      const response = await simulateTavusApiCall(message);
+      // Use Gemini AI for chat responses
+      const response = await GeminiService.chatResponse(message);
       
       // Add bot response to chat
       const botMessage: Message = {
@@ -81,7 +80,7 @@ export function ChatbotProvider({ children }: ChatbotProviderProps) {
         chatbot.triggerNotification();
       }
     } catch (error) {
-      console.error('Error sending message to Tavus:', error);
+      console.error('Error sending message:', error);
       
       // Add error message
       const errorMessage: Message = {
@@ -97,24 +96,6 @@ export function ChatbotProvider({ children }: ChatbotProviderProps) {
     }
   };
 
-  // Simulate Tavus API call (in production, this would be a server-side API call)
-  const simulateTavusApiCall = async (userMessage: string): Promise<string> => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // For demo purposes, return predefined responses based on keywords
-    const lowerCaseMessage = userMessage.toLowerCase();
-    
-    if (lowerCaseMessage.includes('pricing') || lowerCaseMessage.includes('cost') || lowerCaseMessage.includes('plan')) {
-      return "We offer several pricing plans to fit your needs. Our Free plan includes 5 credits/month, while our Creator plan at $29/month includes 100 credits and all core features. For unlimited usage, check out our Ghostwriter plan at $79/month or Agency plan at $199/month.";
-    } else if (lowerCaseMessage.includes('demo') || lowerCaseMessage.includes('try') || lowerCaseMessage.includes('test')) {
-      return "I'd be happy to show you a demo of DIVIT.AI! Our platform offers AI-powered LinkedIn automation with features like post generation, clone building, auto commenting, and connection engine. Would you like me to walk you through a specific feature?";
-    } else if (lowerCaseMessage.includes('feature') || lowerCaseMessage.includes('what') || lowerCaseMessage.includes('how')) {
-      return "DIVIT.AI offers several powerful features: AI Post Generation creates engaging LinkedIn content, Clone Builder replicates your writing style, Auto Commenter engages with relevant posts, and Connection Engine helps you find and connect with ideal prospects. Which feature would you like to learn more about?";
-    } else {
-      return "Thanks for reaching out! I'm here to help with any questions about DIVIT.AI. Our platform helps you automate your LinkedIn presence with AI-powered tools. Is there something specific you'd like to know about our features, pricing, or how to get started?";
-    }
-  };
 
   // Listen for custom events
   useEffect(() => {

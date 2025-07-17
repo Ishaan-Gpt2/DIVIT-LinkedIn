@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuthStore } from '@/store/authStore';
+import { PaymentFlow } from '@/components/ui/payment-flow';
 import { toast } from 'sonner';
 import {
   Check,
@@ -85,6 +86,8 @@ const plans = [
 
 export default function Pricing() {
   const { user, upgradePlan } = useAuthStore();
+  const [showPaymentFlow, setShowPaymentFlow] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<any>(null);
 
   const handleUpgrade = (planId: string) => {
     if (planId === 'free') {
@@ -92,9 +95,19 @@ export default function Pricing() {
       return;
     }
 
-    // Simulate payment process
-    toast.success(`Upgraded to ${planId} plan! (Demo)`);
-    upgradePlan(planId as any);
+    const plan = plans.find(p => p.id === planId);
+    if (plan) {
+      setSelectedPlan(plan);
+      setShowPaymentFlow(true);
+    }
+  };
+
+  const handlePaymentSuccess = () => {
+    if (selectedPlan) {
+      upgradePlan(selectedPlan.id as any);
+      setShowPaymentFlow(false);
+      setSelectedPlan(null);
+    }
   };
 
   const getCurrentPlan = () => {
@@ -211,6 +224,18 @@ export default function Pricing() {
             </Card>
           ))}
         </div>
+        
+        {/* Payment Flow Modal */}
+        {showPaymentFlow && selectedPlan && (
+          <PaymentFlow
+            plan={selectedPlan}
+            onClose={() => {
+              setShowPaymentFlow(false);
+              setSelectedPlan(null);
+            }}
+            onSuccess={handlePaymentSuccess}
+          />
+        )}
 
         {/* Features Comparison */}
         <Card className="bg-gray-900/50 border-gray-800 mb-8">

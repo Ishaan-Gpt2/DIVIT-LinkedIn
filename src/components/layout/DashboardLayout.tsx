@@ -83,14 +83,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="flex h-screen bg-black w-full">
-      {/* Splash Cursor */}
-      <SplashCursor 
-        BACK_COLOR={{ r: 0.3, g: 0, b: 0.5 }}
-        COLOR_UPDATE_SPEED={5}
-        SPLAT_RADIUS={0.3}
-        SPLAT_FORCE={8000}
-      />
-      
       {/* Sidebar */}
       <div className="hidden md:flex md:w-64 md:flex-col md:flex-shrink-0">
         <div className="flex flex-col flex-grow pt-5 overflow-y-auto glass-purple border-r border-purple-800/30 neuro">
